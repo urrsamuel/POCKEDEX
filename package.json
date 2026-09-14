@@ -1,0 +1,15 @@
+{
+  "name": "pockedex",
+  "version": "1.0.0",
+  "description": "Pokedex de la primera generacion con Express y PokeAPI",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": ["pokedex", "pokemon", "express", "pokeapi"],
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
