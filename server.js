@@ -6,6 +6,7 @@ const puerto = process.env.PORT || 3000;
 const limiteGeneracion = 151;
 const urlPrimeraGeneracion = `https://pokeapi.co/api/v2/pokemon?limit=${limiteGeneracion}&offset=0`;
 
+
 let pokemonesGuardados = null;
 
 function normalizar(valor = '') {
@@ -95,7 +96,7 @@ aplicacion.get('/api/pokemon/:id', async (solicitud, respuesta) => {
 
     respuesta.json(pokemon);
   } catch (error) {
-    console.error('Error buscando Pokémon:', error.message);
+    console.error('Error buscando Pokémon:', error.message ,error);
     respuesta.status(502).json({ error: 'No fue posible consultar PokéAPI.' });
   }
 });
