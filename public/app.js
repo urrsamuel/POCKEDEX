@@ -1,198 +1,23 @@
 const elementos = {
-    cuadricula: document.querySelector('#cuadricula-pokemon'),
-    campoBusqueda: document.querySelector('#entrada-busqueda'),
-    filtroTipo: document.querySelector('#filtro-tipo'),
-    botonLimpiar: document.querySelector('#boton-limpiar'),
-    cantidadResultados: document.querySelector('#cantidad-resultados'),
-    tituloResultados: document.querySelector('#titulo-resultados'),
-    estadoVacio: document.querySelector('#estado-vacio'),
-    formularioIdentificador: document.querySelector('#formulario-identificador'),
-    entradaId: document.querySelector('#entrada-id'),
-    resultadoIdentificador: document.querySelector('#resultado-identificador'),
-    ventanaDetalle: document.querySelector('#ventana-detalle'),
-    detalleNumero: document.querySelector('#detalle-numero'),
-    detalleImagen: document.querySelector('#detalle-imagen'),
-    detalleTipos: document.querySelector('#detalle-tipos'),
-    detalleNombre: document.querySelector('#detalle-nombre'),
-    detalleAltura: document.querySelector('#detalle-altura'),
-    detallePeso: document.querySelector('#detalle-peso'),
-    detalleAudio: document.querySelector('#detalle-audio'),
-    botonCerrarDetalle: document.querySelector('.cerrar-detalle'),
-    fondoVentana: document.querySelector('.fondo-ventana')
+    imagen: document.querySelector('#pokemon-imagen'), numero: document.querySelector('#pantalla-numero'), nombre: document.querySelector('#pokemon-nombre'), categoria: document.querySelector('#pokemon-categoria'), tipos: document.querySelector('#pokemon-tipos'), altura: document.querySelector('#pokemon-altura'), peso: document.querySelector('#pokemon-peso'), tipoPrincipal: document.querySelector('#pokemon-tipo-principal'), estadoPantalla: document.querySelector('#pantalla-estado'), campoBusqueda: document.querySelector('#entrada-busqueda'), formularioBusqueda: document.querySelector('#formulario-busqueda'), filtroTipo: document.querySelector('#filtro-tipo'), botonLimpiar: document.querySelector('#boton-limpiar'), botonAnterior: document.querySelector('#boton-anterior'), botonSiguiente: document.querySelector('#boton-siguiente'), botonSonido: document.querySelector('#boton-sonido'), botonDetalle: document.querySelector('#boton-detalle'), cantidadResultados: document.querySelector('#cantidad-resultados'), estadoVacio: document.querySelector('#estado-vacio'), formularioChat: document.querySelector('#formulario-chat'), entradaChat: document.querySelector('#entrada-chat'), mensajesChat: document.querySelector('#mensajes-chat'), botonLimpiarChat: document.querySelector('#boton-limpiar-chat'), ventanaDetalle: document.querySelector('#ventana-detalle'), detalleNumero: document.querySelector('#detalle-numero'), detalleImagen: document.querySelector('#detalle-imagen'), detalleTipos: document.querySelector('#detalle-tipos'), detalleNombre: document.querySelector('#detalle-nombre'), detalleAltura: document.querySelector('#detalle-altura'), detallePeso: document.querySelector('#detalle-peso'), detalleAudio: document.querySelector('#detalle-audio'), botonCerrarDetalle: document.querySelector('.cerrar-detalle'), fondoVentana: document.querySelector('.fondo-ventana')
 };
-
-const coloresTipos = {
-    normal: '#9c9c82', fire: '#ec6a3c', water: '#4f90db', electric: '#d9af20', grass: '#63a953', ice: '#77c8c8',
-    fighting: '#bd4c43', poison: '#9951a0', ground: '#b68b4a', flying: '#8297dc', psychic: '#db5c83', bug: '#8fa52e',
-    rock: '#9f8a59', ghost: '#705a88', dragon: '#6552b3'
-};
-
-const nombresTipos = {
-    normal: 'Normal', fire: 'Fuego', water: 'Agua', electric: 'Eléctrico', grass: 'Planta', ice: 'Hielo',
-    fighting: 'Lucha', poison: 'Veneno', ground: 'Tierra', flying: 'Volador', psychic: 'Psíquico', bug: 'Bicho',
-    rock: 'Roca', ghost: 'Fantasma', dragon: 'Dragón'
-};
-
-let temporizadorBusqueda;
-
-function formatearNombre(nombre) {
-    return nombre.charAt(0).toUpperCase() + nombre.slice(1);
-}
-
-function crearTipos(tipos) {
-    return tipos.map((tipo) => `
-        <span class="tipo-pokemon" style="--color-tipo: ${coloresTipos[tipo] || '#76837a'}">
-            ${nombresTipos[tipo] || tipo}
-        </span>
-    `).join('');
-}
-
-function crearTarjetaPokemon(pokemon, indice) {
-    const audio = pokemon.audio
-        ? `<audio class="audio-pokemon" controls preload="none" aria-label="Sonido de ${formatearNombre(pokemon.nombre)}" src="${pokemon.audio}"></audio>`
-        : '';
-
-    return `
-        <article class="tarjeta-pokemon" data-id="${pokemon.id}" style="--acento: ${coloresTipos[pokemon.tipos[0]] || '#93c5db'}; animation-delay: ${Math.min(indice, 12) * 25}ms">
-            <span class="numero-pokemon">N.º ${String(pokemon.id).padStart(3, '0')}</span>
-            <img class="imagen-pokemon" src="${pokemon.imagen}" alt="${formatearNombre(pokemon.nombre)}" loading="lazy" />
-            <h3 class="nombre-pokemon">${formatearNombre(pokemon.nombre)}</h3>
-            <div class="tipos-pokemon">${crearTipos(pokemon.tipos)}</div>
-            ${audio}
-        </article>
-    `;
-}
-
-function mostrarPokemones(pokemones) {
-    elementos.cuadricula.innerHTML = pokemones
-        .map((pokemon, indice) => crearTarjetaPokemon(pokemon, indice))
-        .join('');
-}
-
-function mostrarDetalle(pokemon) {
-    elementos.detalleNumero.textContent = `N.º ${String(pokemon.id).padStart(3, '0')}`;
-    elementos.detalleImagen.src = pokemon.imagen;
-    elementos.detalleImagen.alt = formatearNombre(pokemon.nombre);
-    elementos.detalleTipos.innerHTML = crearTipos(pokemon.tipos);
-    elementos.detalleNombre.textContent = formatearNombre(pokemon.nombre);
-    elementos.detalleAltura.textContent = `${(pokemon.altura / 10).toFixed(1)} m`;
-    elementos.detallePeso.textContent = `${(pokemon.peso / 10).toFixed(1)} kg`;
-    elementos.detalleAudio.hidden = !pokemon.audio;
-    elementos.detalleAudio.src = pokemon.audio || '';
-    elementos.ventanaDetalle.hidden = false;
-}
-
-function cerrarDetalle(evento) {
-    evento?.preventDefault();
-    evento?.stopPropagation();
-    elementos.ventanaDetalle.hidden = true;
-    elementos.detalleAudio.pause();
-    elementos.detalleAudio.currentTime = 0;
-}
-
-async function consultarPokemon(id) {
-    const respuesta = await fetch(`/api/pokemon/${id}`);
-    if (!respuesta.ok) throw new Error('No se pudo cargar la información del Pokémon.');
-    return respuesta.json();
-}
-
-async function abrirDetalle(id) {
-    try {
-        mostrarDetalle(await consultarPokemon(id));
-    } catch (error) {
-        mostrarError(error.message);
-    }
-}
-
-async function identificarPokemon(evento) {
-    evento.preventDefault();
-    const id = Number.parseInt(elementos.entradaId.value, 10);
-
-    if (!id || id < 1 || id > 151) {
-        elementos.resultadoIdentificador.hidden = false;
-        elementos.resultadoIdentificador.textContent = 'Escribe un ID entre 1 y 151.';
-        return;
-    }
-
-    elementos.resultadoIdentificador.hidden = false;
-    elementos.resultadoIdentificador.textContent = 'Buscando...';
-
-    try {
-        const pokemon = await consultarPokemon(id);
-        elementos.resultadoIdentificador.innerHTML = `
-            <img src="${pokemon.imagen}" alt="${formatearNombre(pokemon.nombre)}" />
-            <div>
-                <span>N.º ${String(pokemon.id).padStart(3, '0')}</span>
-                <strong>${formatearNombre(pokemon.nombre)}</strong>
-            </div>
-        `;
-    } catch (error) {
-        elementos.resultadoIdentificador.textContent = error.message;
-    }
-}
-
-function mostrarError(mensaje) {
-    elementos.cuadricula.innerHTML = '';
-    elementos.cantidadResultados.textContent = 'Error de conexión';
-    elementos.estadoVacio.textContent = mensaje;
-    elementos.estadoVacio.hidden = false;
-}
-
-async function cargarPokemones() {
-    const parametros = new URLSearchParams();
-    const busqueda = elementos.campoBusqueda.value.trim();
-    const tipo = elementos.filtroTipo.value;
-
-    if (busqueda) parametros.set('busqueda', busqueda);
-    if (tipo) parametros.set('tipo', tipo);
-
-    elementos.cantidadResultados.textContent = 'Consultando archivo...';
-
-    try {
-        const respuesta = await fetch(`/api/pokemon?${parametros}`);
-        if (!respuesta.ok) throw new Error('No se pudo cargar el archivo.');
-
-        const datos = await respuesta.json();
-        mostrarPokemones(datos.resultados);
-        elementos.cantidadResultados.textContent = `${datos.cantidad} de ${datos.total} especies`;
-        elementos.tituloResultados.textContent = datos.cantidad === datos.total
-            ? 'Exploradores de la región'
-            : 'Resultados de búsqueda';
-        elementos.estadoVacio.hidden = datos.resultados.length > 0;
-    } catch (error) {
-        mostrarError(error.message);
-    }
-}
-
-function limpiarFiltros() {
-    elementos.campoBusqueda.value = '';
-    elementos.filtroTipo.value = '';
-    cargarPokemones();
-}
-
-function configurarEventos() {
-    elementos.campoBusqueda.addEventListener('input', () => {
-        clearTimeout(temporizadorBusqueda);
-        temporizadorBusqueda = setTimeout(cargarPokemones, 250);
-    });
-
-    elementos.filtroTipo.addEventListener('change', cargarPokemones);
-    elementos.botonLimpiar.addEventListener('click', limpiarFiltros);
-    elementos.formularioIdentificador.addEventListener('submit', identificarPokemon);
-    elementos.botonCerrarDetalle.addEventListener('click', cerrarDetalle);
-    elementos.fondoVentana.addEventListener('click', cerrarDetalle);
-
-    elementos.cuadricula.addEventListener('click', (evento) => {
-        if (evento.target.closest('audio')) return;
-
-        const tarjeta = evento.target.closest('.tarjeta-pokemon');
-        if (tarjeta) abrirDetalle(tarjeta.dataset.id);
-    });
-
-    document.addEventListener('keydown', (evento) => {
-        if (evento.key === 'Escape') cerrarDetalle();
-    });
-}
-
-configurarEventos();
-cargarPokemones();
+const coloresTipos = { normal: '#929b87', fire: '#e2633c', water: '#4e8dcc', electric: '#d6ad28', grass: '#61a853', ice: '#68bac0', fighting: '#b84f49', poison: '#95549e', ground: '#ac8146', flying: '#788fd0', psychic: '#d95b80', bug: '#879d35', rock: '#9b8454', ghost: '#705b88', dragon: '#6354ac' };
+const nombresTipos = { normal: 'Normal', fire: 'Fuego', water: 'Agua', electric: 'Eléctrico', grass: 'Planta', ice: 'Hielo', fighting: 'Lucha', poison: 'Veneno', ground: 'Tierra', flying: 'Volador', psychic: 'Psíquico', bug: 'Bicho', rock: 'Roca', ghost: 'Fantasma', dragon: 'Dragón' };
+let temporizadorBusqueda; let historialChat = []; let resultadosActuales = []; let pokemonActivo = null;
+function formatearNombre(nombre) { return nombre.charAt(0).toUpperCase() + nombre.slice(1); }
+function crearTipos(tipos) { return tipos.map((tipo) => `<span class="tipo-pokemon" style="--color-tipo: ${coloresTipos[tipo] || '#76837a'}">${nombresTipos[tipo] || tipo}</span>`).join(''); }
+async function leerRespuestaJson(respuesta) { const tipo = respuesta.headers.get('content-type') || ''; if (!tipo.includes('application/json')) throw new Error('Inicia la Pokédex con "npm start" y abre http://localhost:3000.'); return respuesta.json(); }
+function pintarPokemon(pokemon) { pokemonActivo = pokemon; elementos.numero.textContent = `N.º ${String(pokemon.id).padStart(3, '0')}`; elementos.estadoPantalla.textContent = 'REGISTRO ACTIVO'; elementos.imagen.src = pokemon.imagen; elementos.imagen.alt = formatearNombre(pokemon.nombre); elementos.nombre.textContent = formatearNombre(pokemon.nombre); elementos.categoria.textContent = pokemon.tipos.map((tipo) => nombresTipos[tipo] || tipo).join(' / ').toUpperCase(); elementos.tipos.innerHTML = crearTipos(pokemon.tipos); elementos.altura.textContent = `${(pokemon.altura / 10).toFixed(1)} m`; elementos.peso.textContent = `${(pokemon.peso / 10).toFixed(1)} kg`; elementos.tipoPrincipal.textContent = (nombresTipos[pokemon.tipos[0]] || pokemon.tipos[0]).toUpperCase(); elementos.estadoVacio.hidden = true; elementos.imagen.classList.remove('entrada-pokemon'); requestAnimationFrame(() => elementos.imagen.classList.add('entrada-pokemon')); }
+function mostrarError(mensaje) { elementos.estadoPantalla.textContent = 'ERROR DE SISTEMA'; elementos.nombre.textContent = 'SIN REGISTRO'; elementos.cantidadResultados.textContent = 'CONEXIÓN FALLIDA'; elementos.estadoVacio.textContent = mensaje; elementos.estadoVacio.hidden = false; }
+function moverPokemon(paso) { if (!resultadosActuales.length) return; const indice = resultadosActuales.findIndex((pokemon) => pokemon.id === pokemonActivo?.id); const siguiente = (indice + paso + resultadosActuales.length) % resultadosActuales.length; pintarPokemon(resultadosActuales[siguiente]); }
+async function cargarPokemones() { const parametros = new URLSearchParams(); const busqueda = elementos.campoBusqueda.value.trim(); const tipo = elementos.filtroTipo.value; if (busqueda) parametros.set('busqueda', busqueda); if (tipo) parametros.set('tipo', tipo); elementos.cantidadResultados.textContent = 'CONSULTANDO...'; try { const respuesta = await fetch(`/api/pokemon?${parametros}`); if (!respuesta.ok) throw new Error('No se pudo cargar el archivo Kanto.'); const datos = await respuesta.json(); resultadosActuales = datos.resultados; elementos.cantidadResultados.textContent = `${datos.cantidad} / ${datos.total} REGISTROS`; if (resultadosActuales.length) pintarPokemon(resultadosActuales[0]); else { pokemonActivo = null; elementos.estadoPantalla.textContent = 'SIN RESULTADOS'; elementos.nombre.textContent = 'NO ENCONTRADO'; elementos.estadoVacio.hidden = false; } } catch (error) { mostrarError(error.message); } }
+function limpiarFiltros() { elementos.campoBusqueda.value = ''; elementos.filtroTipo.value = ''; cargarPokemones(); }
+function mostrarDetalle(pokemon) { elementos.detalleNumero.textContent = `N.º ${String(pokemon.id).padStart(3, '0')}`; elementos.detalleImagen.src = pokemon.imagen; elementos.detalleImagen.alt = formatearNombre(pokemon.nombre); elementos.detalleTipos.innerHTML = crearTipos(pokemon.tipos); elementos.detalleNombre.textContent = formatearNombre(pokemon.nombre); elementos.detalleAltura.textContent = `${(pokemon.altura / 10).toFixed(1)} m`; elementos.detallePeso.textContent = `${(pokemon.peso / 10).toFixed(1)} kg`; elementos.detalleAudio.hidden = !pokemon.audio; elementos.detalleAudio.src = pokemon.audio || ''; elementos.ventanaDetalle.hidden = false; }
+function cerrarDetalle(evento) { evento?.preventDefault(); elementos.ventanaDetalle.hidden = true; elementos.detalleAudio.pause(); }
+function agregarMensajeChat(texto, tipo) { const mensaje = document.createElement('p'); mensaje.className = `mensaje-chat mensaje-${tipo}`; mensaje.textContent = texto; elementos.mensajesChat.appendChild(mensaje); elementos.mensajesChat.scrollTop = elementos.mensajesChat.scrollHeight; return mensaje; }
+function agregarPokemonAlChat(pokemon) { const ficha = document.createElement('article'); ficha.className = 'pokemon-chat'; ficha.innerHTML = `<img src="${pokemon.imagen}" alt="${formatearNombre(pokemon.nombre)}" /><div><span>N.º ${String(pokemon.id).padStart(3, '0')}</span><strong>${formatearNombre(pokemon.nombre)}</strong><small>${crearTipos(pokemon.tipos)}</small></div>`; elementos.mensajesChat.appendChild(ficha); elementos.mensajesChat.scrollTop = elementos.mensajesChat.scrollHeight; }
+async function enviarMensajeChat(evento) { evento.preventDefault(); const mensaje = elementos.entradaChat.value.trim(); if (!mensaje) return; agregarMensajeChat(mensaje, 'usuario'); historialChat.push({ role: 'user', content: mensaje }); elementos.entradaChat.value = ''; elementos.entradaChat.disabled = true; const espera = agregarMensajeChat('PockeIA está pensando...', 'ia espera'); try { const respuesta = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mensajes: historialChat }) }); const datos = await leerRespuestaJson(respuesta); if (!respuesta.ok) throw new Error(datos.error || 'No se pudo enviar el mensaje.'); espera.remove(); agregarMensajeChat(datos.respuesta, 'ia'); if (datos.pokemon) { agregarPokemonAlChat(datos.pokemon); pintarPokemon(datos.pokemon); } historialChat.push({ role: 'assistant', content: datos.respuesta }); } catch (error) { espera.textContent = error.message; } finally { elementos.entradaChat.disabled = false; elementos.entradaChat.focus(); } }
+function limpiarChat() { historialChat = []; elementos.mensajesChat.innerHTML = ''; agregarMensajeChat('Hola, entrenador. Pregúntame por un Pokémon, sus tipos o sus evoluciones.', 'ia'); elementos.entradaChat.focus(); }
+function reproducirSonido() { if (!pokemonActivo?.audio) return; const audio = new Audio(pokemonActivo.audio); audio.play().catch(() => {}); }
+function configurarEventos() { elementos.formularioBusqueda.addEventListener('submit', (evento) => { evento.preventDefault(); cargarPokemones(); }); elementos.campoBusqueda.addEventListener('input', () => { clearTimeout(temporizadorBusqueda); temporizadorBusqueda = setTimeout(cargarPokemones, 280); }); elementos.filtroTipo.addEventListener('change', cargarPokemones); elementos.botonLimpiar.addEventListener('click', limpiarFiltros); elementos.botonAnterior.addEventListener('click', () => moverPokemon(-1)); elementos.botonSiguiente.addEventListener('click', () => moverPokemon(1)); elementos.botonSonido.addEventListener('click', reproducirSonido); elementos.botonDetalle.addEventListener('click', () => pokemonActivo && mostrarDetalle(pokemonActivo)); elementos.formularioChat.addEventListener('submit', enviarMensajeChat); elementos.botonLimpiarChat.addEventListener('click', limpiarChat); elementos.botonCerrarDetalle.addEventListener('click', cerrarDetalle); elementos.fondoVentana.addEventListener('click', cerrarDetalle); document.querySelectorAll('[data-navegacion="izquierda"]').forEach((boton) => boton.addEventListener('click', () => moverPokemon(-1))); document.querySelectorAll('[data-navegacion="derecha"]').forEach((boton) => boton.addEventListener('click', () => moverPokemon(1))); document.addEventListener('keydown', (evento) => { if (evento.key === 'Escape') cerrarDetalle(); if (evento.key === 'ArrowLeft') moverPokemon(-1); if (evento.key === 'ArrowRight') moverPokemon(1); }); }
+configurarEventos(); cargarPokemones();

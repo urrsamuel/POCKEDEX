@@ -3,111 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Explora los 151 Pokémon de la primera generación." />
-    <title>Pockedex · Primera generación</title>
+    <meta name="description" content="Una Pokédex física para explorar la primera generación." />
+    <title>Pokédex · Kanto 001-151</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/styles.css?v=2" />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css?v=3" />
   </head>
   <body>
-    <header class="barra-superior">
-      <a class="marca" href="/" aria-label="Pockedex inicio">
-        <span class="marca-icono">◒</span>
-        <span>POCKEDEX</span>
-      </a>
-    </header>
-
+    <header class="barra-superior"><a class="marca" href="/" aria-label="Pokédex inicio"><span class="marca-luz"></span><span>POKÉDEX</span></a><span class="estado-conexion"><i></i> SISTEMA KANTO / ONLINE</span></header>
     <main>
-      <section class="portada">
-        <div class="texto-portada">
-          <p class="etiqueta">Base de datos de entrenadores</p>
-          <h1>Los primeros<br /><em>151.</em></h1>
-          <p class="descripcion-portada">Una mirada limpia a la región donde todo comenzó. Busca, filtra y conoce cada especie.</p>
-        </div>
-        <div class="orbita-portada" aria-hidden="true">
-          <div class="anillo-orbita anillo-grande"></div>
-          <div class="anillo-orbita anillo-pequeno"></div>
-          <div class="bola-portada"><span></span></div>
-          <span class="etiqueta-orbita etiqueta-superior">001</span>
-          <span class="etiqueta-orbita etiqueta-inferior">151</span>
-        </div>
-      </section>
-
-      <section class="controles" aria-label="Filtros de búsqueda">
-        <div class="campo-busqueda">
-          <span class="icono-busqueda" aria-hidden="true">⌕</span>
-          <input id="entrada-busqueda" type="search" placeholder="Busca por nombre o número..." autocomplete="off" />
-        </div>
-        <label class="campo-filtro">
-          <span>Tipo</span>
-          <select id="filtro-tipo">
-            <option value="">Todos los tipos</option>
-            <option value="normal">Normal</option>
-            <option value="fire">Fuego</option>
-            <option value="water">Agua</option>
-            <option value="electric">Eléctrico</option>
-            <option value="grass">Planta</option>
-            <option value="ice">Hielo</option>
-            <option value="fighting">Lucha</option>
-            <option value="poison">Veneno</option>
-            <option value="ground">Tierra</option>
-            <option value="flying">Volador</option>
-            <option value="psychic">Psíquico</option>
-            <option value="bug">Bicho</option>
-            <option value="rock">Roca</option>
-            <option value="ghost">Fantasma</option>
-            <option value="dragon">Dragón</option>
-          </select>
-        </label>
-        <button id="boton-limpiar" class="boton-limpiar" type="button">Limpiar filtros</button>
-      </section>
-
-      <section class="identificador" aria-labelledby="titulo-identificador">
-        <div>
-          <p class="etiqueta-seccion">Identificador Pokédex</p>
-          <h2 id="titulo-identificador">¿Qué Pokémon es?</h2>
-          <p class="texto-identificador">Escribe un ID del 1 al 151 y consulta su nombre e imagen.</p>
-        </div>
-        <form id="formulario-identificador" class="formulario-identificador">
-          <label for="entrada-id">ID del Pokémon</label>
-          <div class="entrada-con-boton">
-            <input id="entrada-id" type="number" min="1" max="151" placeholder="Ej. 25" required />
-            <button type="submit">Identificar</button>
-          </div>
-        </form>
-        <div id="resultado-identificador" class="resultado-identificador" hidden></div>
-      </section>
-
-      <section class="encabezado-resultados">
-        <div>
-          <p class="etiqueta-seccion">Archivo Kanto</p>
-          <h2 id="titulo-resultados">Exploradores de la región</h2>
-        </div>
-        <p class="cantidad-resultados" id="cantidad-resultados">Cargando...</p>
-      </section>
-
-      <section id="cuadricula-pokemon" class="cuadricula-pokemon" aria-live="polite"></section>
-      <p id="estado-vacio" class="estado-vacio" hidden>No encontramos Pokémon con esos filtros.</p>
+      <section class="pokedex" aria-label="Pokédex de primera generación">
+        <div class="bisagra bisagra-uno"></div><div class="bisagra bisagra-dos"></div>
+        <section class="pokedex-izquierda">
+          <div class="cabecera-dispositivo"><div class="camara"><span></span></div><div class="luces"><i class="luz luz-roja"></i><i class="luz luz-amarilla"></i><i class="luz luz-verde"></i></div><span class="modelo">DEX // 01</span></div>
+          <div class="marco-pantalla"><div class="pantalla-principal" id="pantalla-principal" aria-live="polite"><div class="pantalla-barra"><span id="pantalla-numero">N.º 001</span><span id="pantalla-estado">REGISTRO ACTIVO</span></div><div class="pokemon-visual"><img id="pokemon-imagen" alt="" /></div><div class="pokemon-identidad"><span id="pokemon-categoria">ESPECIE</span><h1 id="pokemon-nombre">Cargando...</h1><div id="pokemon-tipos" class="tipos-pokemon"></div></div><div class="datos-pokemon"><div><span>ALTURA</span><strong id="pokemon-altura">--</strong></div><div><span>PESO</span><strong id="pokemon-peso">--</strong></div><div><span>TIPO</span><strong id="pokemon-tipo-principal">--</strong></div></div></div></div>
+          <div class="controles-fisicos"><div class="control-izquierdo"><button id="boton-anterior" class="boton-circular" type="button" aria-label="Pokémon anterior">◀</button><button id="boton-siguiente" class="boton-circular" type="button" aria-label="Pokémon siguiente">▶</button></div><div class="dpad" aria-label="Navegación de Pokédex"><button type="button" data-navegacion="arriba" aria-label="Subir">▲</button><button type="button" data-navegacion="izquierda" aria-label="Anterior">◀</button><button type="button" data-navegacion="derecha" aria-label="Siguiente">▶</button><button type="button" data-navegacion="abajo" aria-label="Bajar">▼</button></div><div class="boton-audio"><button id="boton-sonido" type="button" aria-label="Reproducir sonido">♫</button><span>CRY</span></div></div><div class="rejilla-decorativa"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </section>
+        <section class="pokedex-derecha">
+          <div class="panel-superior"><span class="etiqueta-panel">POCKEIA // ASISTENTE</span><span class="led-panel"></span><button id="boton-limpiar-chat" type="button">RESET</button></div>
+          <div class="chat-pantalla" id="mensajes-chat" aria-live="polite"><p class="mensaje-chat mensaje-ia">Hola, entrenador. Pregúntame por un Pokémon, sus tipos o sus evoluciones.</p></div>
+          <form id="formulario-chat" class="formulario-chat"><label class="visualmente-oculto" for="entrada-chat">Mensaje para PockeIA</label><input id="entrada-chat" type="text" placeholder="Escribe una consulta..." autocomplete="off" required /><button type="submit" aria-label="Enviar mensaje">↵</button></form>
+          <div class="panel-busqueda"><span class="etiqueta-panel">BUSCAR REGISTRO</span><form id="formulario-busqueda" class="formulario-busqueda"><label class="visualmente-oculto" for="entrada-busqueda">Buscar Pokémon</label><input id="entrada-busqueda" type="search" placeholder="Nombre o número" autocomplete="off" /><button type="submit" aria-label="Buscar Pokémon">⌕</button></form><label class="selector-tipo">FILTRO DE TIPO<select id="filtro-tipo"><option value="">TODOS</option><option value="normal">NORMAL</option><option value="fire">FUEGO</option><option value="water">AGUA</option><option value="electric">ELÉCTRICO</option><option value="grass">PLANTA</option><option value="ice">HIELO</option><option value="fighting">LUCHA</option><option value="poison">VENENO</option><option value="ground">TIERRA</option><option value="flying">VOLADOR</option><option value="psychic">PSÍQUICO</option><option value="bug">BICHO</option><option value="rock">ROCA</option><option value="ghost">FANTASMA</option><option value="dragon">DRAGÓN</option></select></label><p id="cantidad-resultados" class="contador-registros">CARGANDO REGISTROS...</p></div>
+          <div class="controles-derechos"><button id="boton-limpiar" type="button">CLEAR</button><button id="boton-detalle" type="button">OPEN</button><span class="boton-amarillo"></span></div>
+        </section>
+      </section><p id="estado-vacio" class="estado-vacio" hidden>No encontramos ese registro en Kanto.</p>
     </main>
-
-    <div id="ventana-detalle" class="ventana-detalle" hidden>
-      <div class="fondo-ventana" data-cerrar-detalle></div>
-      <article class="detalle-pokemon" role="dialog" aria-modal="true" aria-labelledby="detalle-nombre">
-        <button class="cerrar-detalle" type="button" aria-label="Cerrar detalle" data-cerrar-detalle>×</button>
-        <span id="detalle-numero" class="numero-pokemon"></span>
-        <img id="detalle-imagen" class="imagen-detalle" alt="" />
-        <p id="detalle-tipos" class="tipos-pokemon"></p>
-        <h2 id="detalle-nombre"></h2>
-        <div class="datos-detalle">
-          <span>Altura <strong id="detalle-altura"></strong></span>
-          <span>Peso <strong id="detalle-peso"></strong></span>
-        </div>
-        <audio id="detalle-audio" class="audio-pokemon" controls preload="none"></audio>
-      </article>
-    </div>
-
-    <footer class="pie"><span>DATOS PROPORCIONADOS POR POKÉAPI</span><span>© KANTO ARCHIVE / 2026</span></footer>
-    <script src="/app.js?v=2"></script>
+    <div id="ventana-detalle" class="ventana-detalle" hidden><div class="fondo-ventana" data-cerrar-detalle></div><article class="detalle-pokemon" role="dialog" aria-modal="true" aria-labelledby="detalle-nombre"><button class="cerrar-detalle" type="button" aria-label="Cerrar detalle" data-cerrar-detalle>×</button><span id="detalle-numero" class="numero-pokemon"></span><img id="detalle-imagen" class="imagen-detalle" alt="" /><p id="detalle-tipos" class="tipos-pokemon"></p><h2 id="detalle-nombre"></h2><div class="datos-detalle"><span>Altura <strong id="detalle-altura"></strong></span><span>Peso <strong id="detalle-peso"></strong></span></div><audio id="detalle-audio" class="audio-pokemon" controls preload="none"></audio></article></div>
+    <footer class="pie"><span>POKÉAPI // KANTO ARCHIVE</span><span>DEX SYSTEM 1996 / 2026</span></footer><script src="/app.js?v=3"></script>
   </body>
 </html>

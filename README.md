@@ -2,6 +2,19 @@
 
 Pockedex de la primera generacion. Usa Express para crear una API propia y obtiene los datos reales desde [PokeAPI](https://pokeapi.co/).
 
+## Configurar PockeIA
+
+La aplicacion integra OpenAI desde el servidor. La clave nunca debe escribirse en `public/` ni compartirse en el navegador.
+
+1. Revoca cualquier clave que se haya compartido y crea una nueva en la plataforma de OpenAI.
+2. Copia `.env.example` como `.env`.
+3. Reemplaza `pega_aqui_tu_nueva_clave` por tu clave real en `.env`.
+4. Ejecuta `npm start` y pregunta, por ejemplo: `¿Que Pokemon es el 25?`.
+
+El endpoint `POST /api/ia` recibe `{ "pregunta": "¿Que Pokemon es el 25?" }`, valida el ID contra la primera generacion, consulta los datos de PokeAPI y envia ese contexto a OpenAI.
+
+La interfaz tambien incluye un chat conversacional. El endpoint `POST /api/chat` recibe un arreglo de mensajes, conserva los ultimos 10 para mantener el contexto y devuelve la respuesta de PockeIA. El navegador nunca recibe `OPENAI_API_KEY`; todas las peticiones a OpenAI pasan por `server.js`.
+
 Esta guia explica el proyecto con el **metodo Feynman**: primero lo explicamos de forma sencilla y despues mostramos el codigo importante.
 
 ## 1. Que hace la aplicacion?
